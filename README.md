@@ -43,8 +43,8 @@
   <div class="login-container">
     <h1>Login</h1>
     <form id="loginForm">
-      <input type="text" id="username" placeholder="ชื่อผู้ใช้งาน" required>
-      <input type="password" id="password" placeholder="รหัสนักศึกษา" required>
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
       <button type="submit">Login</button>
     </form>
     <button id="logoutButton" style="display: none;">Logout</button>
@@ -52,46 +52,40 @@
   </div>
 
   <script>
-    const scriptURL = "http://192.168.0.241/login"; // URL ของ Arduino (ESP32)
-    const logoutURL = "http://192.168.0.241/logout"; // URL สำหรับออกจากระบบ
+    const scriptURL = "http://192.168.0.241/login";  // เปลี่ยนเป็น IP ของ ESP32 ของคุณ
+    const logoutURL = "http://192.168.0.241/logout";  // เปลี่ยนเป็น IP ของ ESP32 ของคุณ
     const form = document.getElementById("loginForm");
     const logoutButton = document.getElementById("logoutButton");
     const greeting = document.getElementById("greeting");
 
-    // ฟังก์ชั่นเมื่อกดล็อกอิน
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      // ส่งข้อมูลไปยัง Arduino (ESP32) เพื่อทำการล็อกอิน
       fetch(`${scriptURL}?username=${username}&password=${password}`)
         .then((response) => response.text())
         .then((data) => {
-          // แสดงข้อความยินดีต้อนรับ
-          greeting.textContent = `ยินดีต้อนรับ, ${username}!`;
-          form.style.display = "none";  // ซ่อนฟอร์มเมื่อล็อกอินแล้ว
-          logoutButton.style.display = "inline";  // แสดงปุ่ม Logout
+          greeting.textContent = `Welcome, ${username}!`;
+          form.style.display = "none";
+          logoutButton.style.display = "inline";
         })
-        .catch((error) => alert("Fetch Error: " + error.message));
+        .catch((error) => alert("Error: " + error.message));
     });
 
-    // ฟังก์ชั่นเมื่อกดออกจากระบบ
     logoutButton.addEventListener("click", () => {
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      // ส่งคำขอออกจากระบบไปยัง Arduino (ESP32)
       fetch(`${logoutURL}?username=${username}&password=${password}`)
         .then((response) => response.text())
         .then((data) => {
-          // แสดงข้อความหลังออกจากระบบ
           greeting.textContent = "Logged out successfully!";
-          form.style.display = "block";  // แสดงฟอร์มอีกครั้ง
-          logoutButton.style.display = "none";  // ซ่อนปุ่ม Logout
+          form.style.display = "block";
+          logoutButton.style.display = "none";
         })
-        .catch((error) => alert("Fetch Error: " + error.message));
+        .catch((error) => alert("Error: " + error.message));
     });
   </script>
 </body>
